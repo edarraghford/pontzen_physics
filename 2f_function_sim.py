@@ -51,6 +51,7 @@ x = np.zeros((repeat,ndata,ndata))
 for i in range(repeat):
 	x[i] += flicker_generator(ndata)  
 
+# d = 0 for single plot, d = 1 for multiple plots 
 d = 0 
 plot_data(fn,d) 
 
@@ -80,15 +81,13 @@ def plt_PSD(fn):
 
 def plt_PSD_avg(fn):
 	x = np.linspace(1,ndata/2,ndata/2-1)
-	pow = np.zeros((ndata,ndata)) 
-	for i in range(repeat): 
-		pows = np.fft.fft2(fn,norm="ortho") 
-		pow += np.absolute(pows)**2
+	pow = np.zeros((ndata,ndata))  
+	pows = np.fft.fft2(fn,norm="ortho") 
+	pow = np.absolute(pows)**2
 	pow = pow/repeat 
 	pow3 = pow[1:ndata/2, 1:ndata/2]
         X,Y = np.meshgrid(x,x)
 	R = np.sqrt(X**2+Y**2) 
-	fx = np.zeros((ndata/2-1,ndata/2-1)) 
 	f = np.zeros(ndata/2) 
 	for k in range(ndata/2):
 		n = 0 
@@ -99,16 +98,7 @@ def plt_PSD_avg(fn):
 					n = n+1
 		f[k] = f[k]/n 
  	fs = f[1:]
-	plt.plot(x,fs) 	
-	for  i in range (0,ndata/2-1):
-		for j in range(0,ndata/2-1): 
-			if i == 0 and j ==0: 
-				fx[i,j] = 0
-			else: 
-				fx[i,j] = power_spectrum(R[i,j]) 
-#	ax[0,0].imshow(pow3,cmap = cm.coolwarm, extent = [0,50,50,0]) 
-
-#	ax[1,0].imshow(fx, cmap = cm.coolwarm, extent = [0,50,50,0])     
+	plt.plot(x,fs) 	    
 	plt.plot(x,power_spectrum(x))
 	plt.show()
 plt_PSD_avg(fn) 
